@@ -71,6 +71,22 @@ button.secondary{background:linear-gradient(135deg,#dce8e8,#8da8b1);box-shadow:0
 .toast strong{color:#e4c78b}
 .progress i{background:linear-gradient(90deg,#75c9d1,#e5c58a)}
 
+
+/* Cinematic 3D renderer enhancement; original scene remains as a safe fallback. */
+body.three-ready{background:#142b3a!important}
+body.three-ready .sky,
+body.three-ready .ocean,
+body.three-ready .horizon,
+body.three-ready .land{display:none!important}
+body.three-ready .scene:before{display:none!important}
+body.three-ready .scene{background:transparent}
+body.three-ready .rod{visibility:hidden!important}
+body.three-ready .game{position:absolute;z-index:2;inset:0}
+body.three-ready .toast{backdrop-filter:blur(12px);background:rgba(4,15,25,.76);border-color:rgba(191,224,232,.45)}
+body.three-ready .stat,body.three-ready .pill{backdrop-filter:blur(14px);background:rgba(6,19,30,.72);border-color:rgba(160,211,221,.32)}
+body.three-ready button{transition:filter .15s,transform .15s}
+body.three-ready button:active{transform:translateY(2px);filter:brightness(1.08)}
+
 </style>
 </head>
 <body>
@@ -89,6 +105,7 @@ button.secondary{background:linear-gradient(135deg,#dce8e8,#8da8b1);box-shadow:0
  <section class="subrow"><button class="secondary" id="logBtn">📘 CATCH LOG</button><button class="secondary" id="upgradeBtn">⚓ BOAT UPGRADES</button></section>
 </main>
 <div class="modal" id="modal"><div class="sheet"><h2 id="modalTitle">Boat & Gear</h2><div id="modalBody"></div><button class="secondary" id="closeModal" style="width:100%;margin-top:12px">BACK TO FISHING</button></div></div>
+<script type="module" src="./immersive-3d.js"></script>
 <script>
 (()=>{'use strict';
 let cash=250,xp=0,best='—',state='idle',tension=0,fishTimer=null,catchCount=0,upgrades={rod:0,engine:0,sonar:0},catchLog=[];
