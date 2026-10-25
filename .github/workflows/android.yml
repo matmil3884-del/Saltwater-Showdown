@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'immersive-3d.js'
       - 'www/**'
       - 'package.json'
       - 'capacitor.config.ts'
