@@ -115,6 +115,60 @@
     sprayGeo.setAttribute('position',new THREE.BufferAttribute(sprayArr,3));
     const spray=new THREE.Points(sprayGeo,new THREE.PointsMaterial({color:0xd9f7fa,size:.035,transparent:true,opacity:.45})); scene.add(spray);
 
+
+    // Detailed first-person angler arms, gloves, and a modeled spinning reel.
+    const skinMat=makeMat(0x9a6848,.82,0), gloveMat=makeMat(0x182a34,.52,.12), stitchMat=makeMat(0xb9c9c7,.5,.18);
+    function capsuleBetween(a,b,r,mat){
+      const av=new THREE.Vector3(...a), bv=new THREE.Vector3(...b), d=bv.clone().sub(av);
+      const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),10),mat);
+      mesh.position.copy(av.add(bv).multiplyScalar(.5)); mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize()); scene.add(mesh); return mesh;
+    }
+    // Sleeves and forearms frame the bottom of the camera without blocking the water.
+    const leftSleeve=new THREE.Mesh(new THREE.CylinderGeometry(.34,.46,.95,16),makeMat(0x183c4b,.9));
+    leftSleeve.position.set(-1.65,-1.2,2.7); leftSleeve.rotation.z=-.62; scene.add(leftSleeve);
+    const rightSleeve=new THREE.Mesh(new THREE.CylinderGeometry(.34,.46,.95,16),makeMat(0x183c4b,.9));
+    rightSleeve.position.set(1.62,-1.15,2.75); rightSleeve.rotation.z=.62; scene.add(rightSleeve);
+    capsuleBetween([-1.53,-.95,2.15],[-.75,-.34,1.9],.16,skinMat);
+    capsuleBetween([1.52,-.93,2.18],[2.12,-.38,2.08],.16,skinMat);
+    const leftGlove=new THREE.Mesh(new THREE.SphereGeometry(.22,16,12),gloveMat); leftGlove.position.set(-.73,-.33,1.88); leftGlove.scale.set(1,.8,1.1); scene.add(leftGlove);
+    const rightGlove=new THREE.Mesh(new THREE.SphereGeometry(.22,16,12),gloveMat); rightGlove.position.set(2.13,-.37,2.06); rightGlove.scale.set(1,.8,1.1); scene.add(rightGlove);
+    // Grip fingers and stitched cuff details.
+    for(let i=0;i<3;i++){
+      capsuleBetween([-0.83+i*.07,-.32-i*.025,1.78],[-.72+i*.07,-.24-i*.025,1.72],.035,stitchMat);
+      capsuleBetween([2.04+i*.055,-.37-i*.02,1.96],[2.13+i*.055,-.3-i*.02,1.92],.032,stitchMat);
+    }
+    const reelSpool=new THREE.Mesh(new THREE.CylinderGeometry(.14,.14,.09,24),makeMat(0xd4e0df,.2,.85));
+    reelSpool.rotation.x=Math.PI/2; reelSpool.position.set(2.18,.2,2.02); scene.add(reelSpool);
+    const reelHub=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,.13,16),makeMat(0x172a35,.3,.65));
+    reelHub.rotation.x=Math.PI/2; reelHub.position.set(2.18,.2,1.94); scene.add(reelHub);
+
+    // A recognizable 3D game fish that approaches the boat during the fight.
+    const fish3D=new THREE.Group(); scene.add(fish3D); fish3D.visible=false;
+    const fishSilver=makeMat(0x8db8c5,.28,.42), fishDark=makeMat(0x183f59,.32,.25), fishFin=makeMat(0x327b91,.4,.12), fishGold=makeMat(0xd8b66d,.26,.5);
+    const fishBody=new THREE.Mesh(new THREE.SphereGeometry(1,32,20),fishSilver); fishBody.scale.set(.92,.35,.32); fish3D.add(fishBody);
+    const fishBack=new THREE.Mesh(new THREE.SphereGeometry(1,24,14),fishDark); fishBack.scale.set(.68,.15,.29); fishBack.position.set(-.03,.22,0); fish3D.add(fishBack);
+    const tailShape=new THREE.Shape(); tailShape.moveTo(-.65,0); tailShape.lineTo(-1.25,.42); tailShape.lineTo(-1.1,0); tailShape.lineTo(-1.25,-.42); tailShape.closePath();
+    const tail=new THREE.Mesh(new THREE.ShapeGeometry(tailShape),fishFin); tail.position.z=0; fish3D.add(tail);
+    const dorsal=new THREE.Mesh(new THREE.ConeGeometry(.25,.45,3),fishDark); dorsal.position.set(-.08,.38,0); dorsal.rotation.z=-Math.PI/2; fish3D.add(dorsal);
+    const pectoral=new THREE.Mesh(new THREE.ConeGeometry(.18,.38,3),fishGold); pectoral.position.set(.05,-.12,.27); pectoral.rotation.set(.35,0,-.9); fish3D.add(pectoral);
+    const eyeWhite=new THREE.Mesh(new THREE.SphereGeometry(.075,12,8),makeMat(0xf4f4e8,.3,0)); eyeWhite.position.set(.67,.08,.255); fish3D.add(eyeWhite);
+    const eyeBlack=new THREE.Mesh(new THREE.SphereGeometry(.036,10,8),makeMat(0x07121a,.2,0)); eyeBlack.position.set(.705,.08,.3); fish3D.add(eyeBlack);
+    const gill=new THREE.Mesh(new THREE.TorusGeometry(.16,.012,6,20,Math.PI),stitchMat); gill.position.set(.42,0,.3); gill.rotation.z=Math.PI/2; fish3D.add(gill);
+    fish3D.scale.setScalar(.62); fish3D.position.set(-2.8,.05,-10); fish3D.rotation.y=-.12;
+    // Keep the 3D fish synchronized with the existing fishing gameplay states.
+    let fishTarget=0, fishBiteAt=0;
+    const statusNode=document.getElementById('statusTitle');
+    if(statusNode){
+      new MutationObserver(()=>{
+        const label=(statusNode.textContent||'').toLowerCase();
+        if(label.includes('fish on')||label.includes('fighting')||label.includes('reel')){fish3D.visible=true;fishTarget=1;fishBiteAt=clockSafeTime();}
+        else if(label.includes('landed')){fish3D.visible=true;fishTarget=2;}
+        else if(label.includes('line snapped')){fishTarget=0;setTimeout(()=>{if(fishTarget===0)fish3D.visible=false;},500);}
+        else if(label.includes('line in the water')){fishTarget=0;fish3D.visible=false;}
+      }).observe(statusNode,{childList:true,subtree:true,characterData:true});
+    }
+    function clockSafeTime(){return performance.now()/1000;}
+
     document.body.classList.add('three-ready');
     const clock = new THREE.Clock();
     function resize(){camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));}
