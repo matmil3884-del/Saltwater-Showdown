@@ -43,20 +43,48 @@ button:disabled{opacity:.45;filter:grayscale(.6)}
 .hint{text-align:center;color:#d4f1fa;font-size:11px;text-shadow:0 2px 4px #002}
 .modal{position:absolute;inset:0;background:#001323c9;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.open{display:flex}.sheet{width:min(100%,390px);background:linear-gradient(160deg,#123e5c,#061a31);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 15px 50px #0009}.sheet h2{margin:0 0 8px;color:var(--gold)}.sheet p{font-size:13px;line-height:1.5;color:#d2eaf4}.upgrade{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:12px 0}.upgrade button{padding:9px 12px;min-height:38px;font-size:12px}
 @media(min-height:760px){.scene{flex:1.2}.boat{top:30%}.bottom button{min-height:58px}}
+
+/* Immersive first-person offshore fishing view */
+body{background:#061321}
+.sky{background:linear-gradient(180deg,#06111f 0%,#15364e 52%,#e2a16a 100%)}
+.sun{width:66px;height:66px;background:#f8dba0;box-shadow:0 0 55px 22px #f2a66a55;filter:blur(1px)}
+.ocean{inset:34% 0 0;background:repeating-linear-gradient(177deg,transparent 0 25px,rgba(205,240,244,.15) 26px 28px,transparent 29px 51px),linear-gradient(#176783,#0b354d 65%,#061b2b)}
+.scene{overflow:hidden;perspective:700px}
+.scene:before{content:"";position:absolute;z-index:1;left:-8%;right:-8%;bottom:-5%;height:27%;background:linear-gradient(180deg,#c6d4d6 0%,#718b91 12%,#263c48 16%,#101e29 100%);clip-path:polygon(0 34%,16% 17%,38% 10%,60% 12%,82% 19%,100% 37%,100% 100%,0 100%);border-top:3px solid #dbe8e7;box-shadow:0 -10px 25px #00172566}
+.boat{display:none}
+.rod{left:auto;right:-2%;top:auto;bottom:4%;width:min(48vw,210px);height:min(48vw,210px);transform:rotate(-9deg);transform-origin:bottom right;z-index:3;filter:drop-shadow(0 4px 4px #001)}
+.rod svg{width:100%;height:100%}
+.rod svg path:first-child{stroke-width:10}
+.rod svg path:nth-child(2){stroke:#9bb3bb;stroke-width:3}
+.line{z-index:2;top:48%;left:62%;border-left:1px solid #f8f4dc;box-shadow:0 0 3px #fff}
+.float{z-index:2}
+.fish{z-index:2;width:125px;height:58px}
+.brand{display:flex;flex-direction:column;gap:2px;font-weight:950;letter-spacing:.13em;font-size:clamp(14px,3.6vw,20px);text-shadow:0 2px 12px #000}
+.brand:before{content:"SS";display:inline-flex;align-items:center;justify-content:center;width:30px;height:25px;float:left;margin-right:7px;border:1px solid #c4a66c;color:#e6d4a7;font-size:12px;letter-spacing:.02em;clip-path:polygon(50% 0,100% 18%,88% 78%,50% 100%,12% 78%,0 18%)}
+.brand span{color:#d9bd80}
+.brand div{font-size:9px!important;letter-spacing:.25em!important;color:#a7c0ca!important}
+.pill,.stat{background:rgba(5,15,25,.83);border-color:#607783}
+.stat strong{color:#e4c78b}
+button{background:linear-gradient(135deg,#e8d8b2,#b99b60);box-shadow:0 4px 0 #65512e;color:#111d25;border-radius:8px;text-transform:uppercase;letter-spacing:.04em}
+button.secondary{background:linear-gradient(135deg,#dce8e8,#8da8b1);box-shadow:0 4px 0 #405965;color:#10212b}
+.toast{z-index:4;background:rgba(3,15,25,.88);border-color:#8e9fa2;border-radius:8px;box-shadow:0 10px 35px #0007}
+.toast strong{color:#e4c78b}
+.progress i{background:linear-gradient(90deg,#75c9d1,#e5c58a)}
+
 </style>
 </head>
 <body>
 <div class="sky"><div class="sun"></div><div class="cloud" style="top:25%;animation-duration:36s"></div><div class="cloud" style="top:46%;animation-duration:48s;animation-delay:-20s;transform:scale(.7)"></div></div>
 <div class="ocean"></div><div class="horizon"></div><div class="land"></div>
 <main class="game">
- <header class="top"><div class="brand">SALTWATER <span>SHOWDOWN</span><div style="font-size:10px;letter-spacing:.22em;color:#b7e7f7">FISHING CAREER • PROTOTYPE</div></div><button class="secondary" id="menuBtn" style="min-height:38px;padding:8px 12px;font-size:12px;box-shadow:0 3px 0 #146b8e">BOAT / GEAR</button></header>
+ <header class="top"><div class="brand"><span style="color:#f2eee2">SALTWATER <span>SHOWDOWN</span></span><div>OFFSHORE ANGLER • CAREER MODE</div></div><button class="secondary" id="menuBtn" style="min-height:38px;padding:8px 12px;font-size:12px;box-shadow:0 3px 0 #146b8e">BOAT / GEAR</button></header>
  <section class="stats"><div class="stat"><small>Cash</small><strong id="cash">$250</strong></div><div class="stat"><small>Career XP</small><strong id="xp">0</strong></div><div class="stat"><small>Best catch</small><strong id="best">—</strong></div></section>
- <section class="scene" aria-label="Fishing scene">
+ <section class="scene" aria-label="First-person view from the fishing boat, looking out over the ocean">
   <div class="boat"><svg viewBox="0 0 380 180" role="img" aria-label="Detailed offshore center-console fishing boat with twin outboard motors"><defs><linearGradient id="hull" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f9ffff"/><stop offset=".28" stop-color="#d8e7eb"/><stop offset=".52" stop-color="#2b91b5"/><stop offset=".78" stop-color="#07516f"/><stop offset="1" stop-color="#032b42"/></linearGradient><linearGradient id="deck"><stop stop-color="#fffef4"/><stop offset="1" stop-color="#a8c9d1"/></linearGradient><linearGradient id="glass"><stop stop-color="#8ee8f8"/><stop offset="1" stop-color="#164e70"/></linearGradient><linearGradient id="metal"><stop stop-color="#f8ffff"/><stop offset=".45" stop-color="#7f9aa6"/><stop offset="1" stop-color="#e6f6f8"/></linearGradient></defs><ellipse cx="190" cy="151" rx="151" ry="13" fill="#00192b" opacity=".36"/><path d="M18 94 Q183 78 356 93 L324 127 Q270 148 179 150 Q83 145 49 123 Z" fill="url(#hull)" stroke="#efffff" stroke-width="3"/><path d="M31 98 Q181 87 345 98" fill="none" stroke="#f9ffff" stroke-width="4"/><path d="M51 119 Q174 140 321 119" fill="none" stroke="#58d6ed" stroke-width="3"/><path d="M82 89 L105 59 Q111 54 124 54 L252 54 Q267 55 280 89 Z" fill="url(#deck)" stroke="#2a5365" stroke-width="3"/><path d="M125 57 L139 27 L241 27 L258 57 Z" fill="#f4fbfa" stroke="#243f50" stroke-width="3"/><path d="M143 31 L151 48 L228 48 L237 31 Z" fill="url(#glass)" stroke="#d6f9ff" stroke-width="2"/><path d="M188 27 L188 11 L194 11 L194 27 M191 12 L220 18" stroke="url(#metal)" stroke-width="3" fill="none"/><rect x="165" y="15" width="17" height="5" rx="2" fill="#eafcff"/><path d="M132 57 L132 69 L243 69 L243 57" fill="#d2e5e9" stroke="#496b78" stroke-width="2"/><path d="M95 78 L270 78" stroke="#536d77" stroke-width="3"/><rect x="112" y="73" width="27" height="8" rx="3" fill="#f9ffff"/><rect x="224" y="73" width="27" height="8" rx="3" fill="#f9ffff"/><path d="M93 90 L80 104 M276 90 L289 104" stroke="#f8ffff" stroke-width="3"/><path d="M74 101 L90 101 M282 101 L298 101" stroke="#ffdb80" stroke-width="4"/><path d="M300 120 L302 143 L320 143 L322 122 Z" fill="#162f40" stroke="#a9d8e4" stroke-width="2"/><path d="M326 120 L329 143 L347 143 L348 119 Z" fill="#263f50" stroke="#a9d8e4" stroke-width="2"/><path d="M307 125 L315 125 L315 138 L309 138 Z M333 125 L341 125 L341 138 L335 138 Z" fill="#e6f6f8"/><path d="M60 111 L78 112 M90 116 L109 117 M240 117 L260 115" stroke="#d9f9ff" stroke-width="2" opacity=".8"/><circle cx="190" cy="7" r="3" fill="#ffdb78"/><path d="M190 10 L190 20" stroke="#d7f8ff" stroke-width="2"/></svg></div>
   <div class="rod"><svg viewBox="0 0 140 140"><path d="M20 123 Q65 80 117 7" stroke="#080e17" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M20 123 Q65 80 117 7" stroke="#7f9aa8" stroke-width="3" fill="none"/><path d="M19 125 L33 112" stroke="#d7e5e9" stroke-width="8" stroke-linecap="round"/><ellipse cx="43" cy="98" rx="8" ry="11" fill="#b8cbd2" stroke="#263b4a" stroke-width="3"/><circle cx="43" cy="98" r="4" fill="#152c3a"/><path d="M43 98 L55 105 L58 101" stroke="#c3d7df" stroke-width="3" fill="none"/></svg></div><div class="line" id="line"></div><div class="float" id="bobber">🔴</div><div class="fish" id="fish"></div>
-  <div class="toast"><strong id="statusTitle">Welcome aboard, Captain!</strong><span id="statusText">Cast your line to start your first fishing trip.</span><div class="progress"><i id="tension"></i></div></div>
+  <div class="toast"><strong id="statusTitle">OFFSHORE • OPEN WATER</strong><span id="statusText">Your view from the deck. Cast beyond the wake and work the fish.</span><div class="progress"><i id="tension"></i></div></div>
  </section>
- <div class="hint" id="hint">Tip: reel when the fish is hooked. Keep an eye on line tension!</div>
+ <div class="hint" id="hint">FIRST-PERSON VIEW  /  Watch the line tension. Ease off if it climbs too high.</div>
  <section class="bottom"><button id="castBtn">🎣 CAST LINE</button><button id="reelBtn" class="secondary" disabled>⬆ REEL IN</button></section>
  <section class="subrow"><button class="secondary" id="logBtn">📘 CATCH LOG</button><button class="secondary" id="upgradeBtn">⚓ BOAT UPGRADES</button></section>
 </main>
