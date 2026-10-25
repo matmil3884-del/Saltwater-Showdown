@@ -183,7 +183,29 @@
       for(const c of clouds){c.position.x+=c.userData.speed*.016;if(c.position.x>24)c.position.x=-24;}
       glintGroup.position.x=Math.sin(t*.09)*.22;
       hull.position.y=-1.25+Math.sin(t*1.1)*.045;
-      rod.rotation.z=Math.sin(t*.8)*.012;
+      rod.rotation.z=Math.sin(t*.8)*.012 + (fishTarget===1 ? Math.sin(t*5)*.055 : 0);
+      leftSleeve.rotation.z=-.62+Math.sin(t*1.1)*.018;
+      rightSleeve.rotation.z=.62-Math.sin(t*1.1)*.018;
+      if(fishTarget===1){
+        fish3D.visible=true;
+        fish3D.position.x=Math.sin(t*2.2)*1.15;
+        fish3D.position.y=.18+Math.sin(t*5.1)*.22;
+        fish3D.position.z=-8.4+Math.sin(t*1.7)*.45;
+        fish3D.rotation.y=Math.sin(t*2.4)*.35;
+        tail.rotation.y=Math.sin(t*12)*.48;
+        fish3D.scale.setScalar(.62);
+      } else if(fishTarget===2){
+        fish3D.visible=true;
+        fish3D.position.set(.15,.7,-5.8);
+        fish3D.rotation.y=Math.sin(t*2)*.12;
+        tail.rotation.y=Math.sin(t*7)*.16;
+        fish3D.scale.setScalar(.95+Math.sin(t*3)*.025);
+      } else {
+        fish3D.position.x=-2.8+Math.sin(t*.7)*.08;
+        fish3D.position.y=.05;
+        fish3D.position.z=-10;
+        tail.rotation.y=Math.sin(t*3)*.12;
+      }
       renderer.render(scene,camera);
     });
   } catch (err) {
