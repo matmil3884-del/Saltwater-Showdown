@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#061b32">
+<title>Saltwater Showdown 3D — Fishing Career</title>
+<style>
+:root{--gold:#ffd66b;--cyan:#75efff;--panel:rgba(5,24,45,.84);--line:rgba(130,226,255,.35)}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#061b32;color:#f4fbff;font-family:system-ui,-apple-system,Segoe UI,sans-serif;touch-action:manipulation}
+body{background:linear-gradient(#092747 0%,#0879a3 37%,#075477 56%,#032b4c 100%)}
+.sky{position:absolute;inset:0 0 48% 0;background:linear-gradient(#07152f,#174d76 72%,#e6a56b);overflow:hidden}
+.sun{position:absolute;width:78px;height:78px;border-radius:50%;background:#ffe6a0;box-shadow:0 0 45px 18px #ffbc70;top:10%;right:16%}
+.cloud{position:absolute;width:120px;height:24px;background:#d5e9f0;opacity:.24;border-radius:50px;filter:blur(5px);animation:drift 28s linear infinite}.cloud:before,.cloud:after{content:"";position:absolute;background:inherit;border-radius:50%;width:54px;height:35px;top:-14px;left:20px}.cloud:after{left:58px;top:-8px;width:43px;height:29px}
+@keyframes drift{from{transform:translateX(-180px)}to{transform:translateX(110vw)}}
+.ocean{position:absolute;inset:34% 0 0;background:repeating-linear-gradient(174deg,transparent 0 20px,rgba(143,244,255,.15) 21px 23px,transparent 24px 43px),linear-gradient(#087fa6,#064b72 65%,#031d39);animation:water 5s linear infinite}
+@keyframes water{from{background-position:0 0,0 0}to{background-position:90px 0,0 0}}
+.horizon{position:absolute;top:36%;height:3px;width:100%;background:rgba(255,229,174,.4);box-shadow:0 0 18px #a6eaff}
+.land{position:absolute;top:31%;left:-4%;width:42%;height:9%;background:#0b3b4b;clip-path:polygon(0 70%,18% 52%,33% 55%,53% 15%,69% 43%,100% 65%,100% 100%,0 100%);opacity:.75}
+.game{position:absolute;inset:0;display:flex;flex-direction:column;padding: max(12px,env(safe-area-inset-top)) 12px max(10px,env(safe-area-inset-bottom));gap:9px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{font-weight:950;letter-spacing:.06em;font-size:clamp(15px,4vw,21px);text-shadow:0 2px 10px #001324}.brand span{color:var(--gold)}
+.pill{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px 10px;font-size:12px;backdrop-filter:blur(8px);white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:8px;text-align:center;backdrop-filter:blur(8px)}.stat small{display:block;color:#a9d8eb;font-size:10px;text-transform:uppercase;letter-spacing:.1em}.stat strong{font-size:17px;color:var(--gold)}
+.scene{position:relative;flex:1;min-height:150px}
+.boat{position:absolute;left:50%;top:31%;transform:translateX(-50%);width:min(68vw,330px);height:130px;animation:bob 3s ease-in-out infinite;filter:drop-shadow(0 13px 10px #00243a99)}
+@keyframes bob{0%,100%{margin-top:0}50%{margin-top:8px}}
+.boat svg{width:100%;height:100%;overflow:visible}
+.line{position:absolute;top:48%;left:58%;height:0;width:0;border-left:1px solid #f7f0d1;transform:rotate(24deg);transform-origin:top;transition:height .5s}
+.float{position:absolute;left:66%;top:69%;font-size:24px;filter:drop-shadow(0 2px 5px #001);animation:bob 1.7s infinite;display:none}
+.fish{position:absolute;font-size:38px;left:10%;top:70%;transition:all 1s ease;filter:drop-shadow(0 3px 4px #001)}
+.toast{position:absolute;left:50%;top:8%;transform:translateX(-50%);background:rgba(2,18,36,.86);border:1px solid var(--line);border-radius:16px;padding:12px 15px;text-align:center;width:min(92%,360px);box-shadow:0 8px 25px #0017}
+.toast strong{color:var(--gold);display:block;font-size:16px}.toast span{font-size:12px;color:#d2edf7}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+button{border:0;border-radius:15px;padding:14px 10px;font-size:15px;font-weight:850;color:#06233b;background:linear-gradient(135deg,#fff0b4,#ffc64f);box-shadow:0 4px 0 #a96522;min-height:50px;cursor:pointer}
+button.secondary{background:linear-gradient(135deg,#b4f7ff,#47c9e9);box-shadow:0 4px 0 #146b8e}
+button:disabled{opacity:.45;filter:grayscale(.6)}
+.subrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.subrow button{font-size:12px;min-height:42px;padding:10px}
+.progress{height:7px;border-radius:20px;background:#031c31;overflow:hidden;margin-top:6px}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#47d9f3,#ffe078);transition:width .2s}
+.hint{text-align:center;color:#d4f1fa;font-size:11px;text-shadow:0 2px 4px #002}
+.modal{position:absolute;inset:0;background:#001323c9;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.open{display:flex}.sheet{width:min(100%,390px);background:linear-gradient(160deg,#123e5c,#061a31);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 15px 50px #0009}.sheet h2{margin:0 0 8px;color:var(--gold)}.sheet p{font-size:13px;line-height:1.5;color:#d2eaf4}.upgrade{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:12px 0}.upgrade button{padding:9px 12px;min-height:38px;font-size:12px}
+@media(min-height:760px){.scene{flex:1.2}.boat{top:30%}.bottom button{min-height:58px}}
+</style>
+</head>
+<body>
+<div class="sky"><div class="sun"></div><div class="cloud" style="top:25%;animation-duration:36s"></div><div class="cloud" style="top:46%;animation-duration:48s;animation-delay:-20s;transform:scale(.7)"></div></div>
+<div class="ocean"></div><div class="horizon"></div><div class="land"></div>
+<main class="game">
+ <header class="top"><div class="brand">SALTWATER <span>SHOWDOWN</span><div style="font-size:10px;letter-spacing:.22em;color:#b7e7f7">FISHING CAREER • PROTOTYPE</div></div><button class="secondary" id="menuBtn" style="min-height:38px;padding:8px 12px;font-size:12px;box-shadow:0 3px 0 #146b8e">BOAT / GEAR</button></header>
+ <section class="stats"><div class="stat"><small>Cash</small><strong id="cash">$250</strong></div><div class="stat"><small>Career XP</small><strong id="xp">0</strong></div><div class="stat"><small>Best catch</small><strong id="best">—</strong></div></section>
+ <section class="scene" aria-label="Fishing scene">
+  <div class="boat"><svg viewBox="0 0 320 145" role="img" aria-label="Fishing boat on the ocean"><defs><linearGradient id="hull" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f7f7e9"/><stop offset=".45" stop-color="#ffbd48"/><stop offset="1" stop-color="#a54e28"/></linearGradient><linearGradient id="deck"><stop stop-color="#f6ffff"/><stop offset="1" stop-color="#7dbbc9"/></linearGradient></defs><path d="M25 75 L292 75 L252 112 Q159 133 65 109 Z" fill="url(#hull)" stroke="#fff0b4" stroke-width="3"/><path d="M94 70 L112 30 L208 30 L233 72 Z" fill="url(#deck)" stroke="#163c55" stroke-width="3"/><path d="M129 32 L129 12 L188 12 L188 32" fill="#effaff" stroke="#24475a" stroke-width="3"/><rect x="139" y="17" width="16" height="12" fill="#58b8d3"/><rect x="162" y="17" width="16" height="12" fill="#58b8d3"/><path d="M47 87 Q160 104 276 87" fill="none" stroke="#fff5cc" stroke-width="3"/><path d="M112 71 L212 71" stroke="#173b54" stroke-width="4"/><path d="M228 48 L267 9" stroke="#e9f7ff" stroke-width="4"/><path d="M260 11 L286 15" stroke="#e9f7ff" stroke-width="3"/><circle cx="264" cy="11" r="5" fill="#ffd66b"/></svg></div>
+  <div class="line" id="line"></div><div class="float" id="bobber">🔴</div><div class="fish" id="fish">🐟</div>
+  <div class="toast"><strong id="statusTitle">Welcome aboard, Captain!</strong><span id="statusText">Cast your line to start your first fishing trip.</span><div class="progress"><i id="tension"></i></div></div>
+ </section>
+ <div class="hint" id="hint">Tip: reel when the fish is hooked. Keep an eye on line tension!</div>
+ <section class="bottom"><button id="castBtn">🎣 CAST LINE</button><button id="reelBtn" class="secondary" disabled>⬆ REEL IN</button></section>
+ <section class="subrow"><button class="secondary" id="logBtn">📘 CATCH LOG</button><button class="secondary" id="upgradeBtn">⚓ BOAT UPGRADES</button></section>
+</main>
+<div class="modal" id="modal"><div class="sheet"><h2 id="modalTitle">Boat & Gear</h2><div id="modalBody"></div><button class="secondary" id="closeModal" style="width:100%;margin-top:12px">BACK TO FISHING</button></div></div>
+<script>
+(()=>{'use strict';
+let cash=250,xp=0,best='—',state='idle',tension=0,fishTimer=null,catchCount=0,upgrades={rod:0,engine:0,sonar:0},catchLog=[];
+const $=id=>document.getElementById(id);
+const species=[{name:'Red Snapper',emoji:'🐟',value:90,xp:25,weight:'4.2 lb'},{name:'Mahi-Mahi',emoji:'🐠',value:145,xp:40,weight:'8.6 lb'},{name:'Atlantic Tuna',emoji:'🐟',value:220,xp:60,weight:'18.1 lb'},{name:'Grouper',emoji:'🐡',value:120,xp:32,weight:'6.4 lb'},{name:'Blue Marlin',emoji:'🦈',value:420,xp:120,weight:'74.5 lb'}];
+function update(){ $('cash').textContent='$'+cash;$('xp').textContent=xp;$('best').textContent=best;$('reelBtn').disabled=state!=='hooked'&&state!=='fighting';$('castBtn').disabled=state==='casting'||state==='hooked'||state==='fighting';$('tension').style.width=tension+'%';}
+function message(title,body){$('statusTitle').textContent=title;$('statusText').textContent=body}
+function cast(){if(state!=='idle'&&state!=='caught')return;state='casting';tension=0;$('line').style.height='125px';$('bobber').style.display='block';$('fish').style.left='10%';message('Line in the water…','The tide is moving. Waiting for a bite.');$('hint').textContent='Watch the bobber — a bite is coming!';update();fishTimer=setTimeout(()=>{if(state!=='casting')return;state='hooked';$('fish').style.left=(35+Math.random()*25)+'%';message('🎯 FISH ON!','Tap REEL IN to fight the fish.');$('hint').textContent='Reel now! Each pull raises line tension.';tension=22;update();},2400+Math.random()*2400)}
+function reel(){if(state==='hooked'){state='fighting';tension=35;message('The fish is fighting!','Tap REEL IN again to bring it closer.');$('hint').textContent='Reel carefully — too much tension can snap the line.';update();return}if(state!=='fighting')return;tension+=15+Math.random()*14;if(Math.random()<.18)tension+=18;if(tension>=100){state='idle';tension=0;$('line').style.height='0';$('bobber').style.display='none';message('The line snapped!','That fish got away. Try again with a smoother fight.');$('hint').textContent='Upgrade your rod to make fights easier.';update();return}if(Math.random()<.48||tension>70){landFish();return}message('Keep reeling!','The fish is tiring. One more pull might land it.');$('fish').style.left=Math.min(72,parseFloat($('fish').style.left||'45')+5)+'%';update()}
+function landFish(){let s=species[Math.floor(Math.random()*species.length)];if(upgrades.sonar>0&&Math.random()<.35)s=species[4];cash+=s.value;xp+=s.xp;catchCount++;best=s.name;catchLog.unshift(s);state='caught';$('fish').textContent=s.emoji;$('fish').style.left='45%';$('line').style.height='30px';$('bobber').style.display='none';tension=0;message('🎉 '+s.name+' landed!',s.weight+' catch • +$'+s.value+' • +'+s.xp+' XP');$('hint').textContent='Nice catch, Captain! Cast again or improve your boat.';update()}
+function openModal(which){$('modal').classList.add('open');if(which==='log'){$('modalTitle').textContent='📘 Catch Log';$('modalBody').innerHTML=catchLog.length?'<p>Your trip so far — '+catchCount+' fish landed.</p>'+catchLog.slice(0,8).map((s,i)=>'<div class="upgrade"><span>'+s.emoji+' '+s.name+'<br><small>'+s.weight+'</small></span><b style="color:#ffd66b">+$'+s.value+'</b></div>').join(''):'<p>No fish in the log yet. Cast your line and make your first catch!</p>'}else{$('modalTitle').textContent='⚓ Boat & Gear';let data=[['rod','Pro fishing rod','Makes line fights more forgiving',150],['engine','High-performance engine','Boosts career trip earnings',200],['sonar','Fish finder sonar','Improves your chance of finding a trophy fish',300]];$('modalBody').innerHTML='<p>Upgrade your boat to take on tougher offshore trips. Purchases use in-game cash only.</p>'+data.map(([id,name,desc,cost])=>'<div class="upgrade"><div><b>'+name+'</b><br><small>'+desc+'</small><br><small>Level '+upgrades[id]+'</small></div><button data-up="'+id+'" data-cost="'+cost+'">$'+(cost*(upgrades[id]+1))+'</button></div>').join('');$('modalBody').querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{let id=b.dataset.up,cost=Number(b.dataset.cost);if(cash<cost){message('Not enough cash','Land a few more fish to afford that upgrade.');return}cash-=cost;upgrades[id]++;message('Upgrade installed!',id==='rod'?'Your new rod is ready.':id==='engine'?'The boat engine is upgraded.':'Sonar is online — hunt trophy fish!');openModal('upgrade');update()})}}
+$('castBtn').onclick=cast;$('reelBtn').onclick=reel;$('menuBtn').onclick=()=>openModal('upgrade');$('upgradeBtn').onclick=()=>openModal('upgrade');$('logBtn').onclick=()=>openModal('log');$('closeModal').onclick=()=>$('modal').classList.remove('open');
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='casting'){clearTimeout(fishTimer);state='idle';update()}});
+update();
+})();
+</script>
+</body></html>
