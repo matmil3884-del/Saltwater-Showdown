@@ -36,6 +36,7 @@
     sun.position.set(7, 7, -68); scene.add(sun);
     const sunGlow = new THREE.Mesh(new THREE.SphereGeometry(2.0, 24, 16), new THREE.MeshBasicMaterial({color:0xffb76e, transparent:true, opacity:.12, depthWrite:false}));
     sunGlow.position.copy(sun.position); scene.add(sunGlow);
+    const clouds = [];
     const cloudMat = new THREE.MeshStandardMaterial({color:0xb8cbd0, roughness:1, transparent:true, opacity:.19});
     for (let i=0;i<11;i++) {
       const g = new THREE.Group();
@@ -50,8 +51,6 @@
       clouds.push(g);
     }
     function makeMat(color, roughness=.55, metalness=0){return new THREE.MeshStandardMaterial({color,roughness,metalness});}
-    const clouds = [];
-
     // Dense, animated vertex-displaced ocean for actual 3D depth and moving highlights.
     const seaGeo = new THREE.PlaneGeometry(220, 180, 150, 120);
     seaGeo.rotateX(-Math.PI/2);
