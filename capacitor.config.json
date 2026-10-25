@@ -1,0 +1,6 @@
+{
+  "appId": "com.saltwater.showdown",
+  "appName": "Saltwater Showdown",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
