@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'www/**'
       - 'package.json'
       - 'capacitor.config.ts'
       - '.github/workflows/android.yml'
