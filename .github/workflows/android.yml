@@ -8,6 +8,7 @@ on:
       - 'www/**'
       - 'package.json'
       - 'capacitor.config.ts'
+      - 'capacitor.config.json'
       - '.github/workflows/android.yml'
 jobs:
   build:
